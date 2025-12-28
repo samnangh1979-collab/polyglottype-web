@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Difficulty, GameState, Language, TypingStats } from './types';
 import { generatePracticeText } from './services/geminiService';
@@ -24,7 +25,8 @@ const App: React.FC = () => {
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
 
   // --- Refs ---
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  // Fix: Use number for browser-based setInterval reference instead of NodeJS.Timeout
+  const timerRef = useRef<number | null>(null);
 
   // --- Helpers to calculate Stats ---
   const calculateStats = useCallback((): TypingStats => {
@@ -65,14 +67,21 @@ const App: React.FC = () => {
     if (gameState === GameState.Playing) {
       if (!startTime) setStartTime(Date.now());
       
-      timerRef.current = setInterval(() => {
+      // Use window.setInterval to ensure returning a number in browser environments
+      timerRef.current = window.setInterval(() => {
         setTimeElapsed(prev => prev + 1);
       }, 1000);
     } else {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current !== null) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
+      if (timerRef.current !== null) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     };
   }, [gameState, startTime]);
 

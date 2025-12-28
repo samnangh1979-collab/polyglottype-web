@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 import { Difficulty, Language } from "../types";
 
@@ -26,8 +27,9 @@ export const generatePracticeText = async (language: Language, difficulty: Diffi
     ${lengthPrompt}
     Do not include any translations, titles, or introductory phrases like 'Here is a text'. Just the raw paragraph text.`;
 
+    // Updated model to gemini-3-flash-preview as per the latest GenAI guidelines
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-flash-preview",
       contents: prompt,
       config: {
         systemInstruction: SYSTEM_INSTRUCTION,
@@ -35,6 +37,7 @@ export const generatePracticeText = async (language: Language, difficulty: Diffi
       },
     });
 
+    // Directly access response.text property as per the SDK documentation
     return response.text?.trim() || "Failed to generate text. Please try again.";
   } catch (error) {
     console.error("Error generating text:", error);
