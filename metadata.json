@@ -1,0 +1,5 @@
+{
+  "name": "Polyglot Type",
+  "description": "A multi-language typing trainer powered by Gemini. Practice typing in 7 languages with varying difficulty levels and real-time statistics.",
+  "requestFramePermissions": []
+}
